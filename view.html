@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>View Reservations</title>
+    <!-- Latest compiled and minified CSS & JS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="jumbotron">
+        <h1>Hot Restaurant</h1>
+        <h3>Book your seat before they are all gone!</h3>
+        <hr />
+        <a href="/make">
+          <button class="btn btn-danger btn-lg">
+            <span class="fa fa-eye"></span> Make Reservation
+          </button>
+        </a>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <div class="card mb-4">
+            <div class="card-header">
+              <h3><strong>Current Reservations</strong></h3>
+            </div>
+            <div class="card-body">
+              <ul id="tableList" class="list-group"></ul>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3><strong>Waiting List</strong></h3>
+              </div>
+              <div class="card-body">
+                <ul id="waitList" class="list-group"></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="footer">
+      <div class="container">
+        <p>
+          <a href="/api/tables">API Tables</a> |
+          <a href="/api/waiting">API Waitlist</a>
+        </p>
+      </div>
+    </footer>
+  </body>
+  <script type="text/javascript">
+    const runTableQuery = () => {
+      fetch("/api/tables", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => response.json())
+        .then((tableData) => {
+          console.log("tableData", tableData);
+          console.log("------------------------------------");
+
+          for (let i = 0; i < tableData.length; i++) {
+            const tableList = document.getElementById("tableList");
+
+            let listItem = document.createElement("li");
+            listItem.classList.add("list-group-item", "mt-4");
+
+            const tableEl = document.createElement("h2");
+            tableEl.textContent = `Table #${i + 1}`;
+
+            const hrBreak = document.createElement("hr");
+
+            const nameEl = document.createElement("h2");
+            nameEl.textContent = `Name: ${tableData[i].name}`;
+
+            const emailEl = document.createElement("h2");
+            emailEl.textContent = `Email: ${tableData[i].email}`;
+
+            const phoneEl = document.createElement("h2");
+            phoneEl.textContent = `Phone: ${tableData[i].phone}`;
+
+            listItem.appendChild(tableEl);
+            listItem.appendChild(hrBreak);
+            listItem.appendChild(nameEl);
+            listItem.appendChild(emailEl);
+            listItem.appendChild(phoneEl);
+            tableList.appendChild(listItem);
+          }
+        })
+        .catch((error) => console.log("Error:", error));
+    };
+
+    const runWaitListQuery = () => {
+      fetch("/api/waiting", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => response.json())
+        .then((waitData) => {
+          console.log("runWaitListQuery -> waitData", waitData);
+          console.log("------------------------------------");
+
+          for (let i = 0; i < waitData.length; i++) {
+            const waitList = document.getElementById("waitList");
+            console.log("runWaitListQuery -> waitList", waitList);
+
+            let listItem = document.createElement("li");
+            listItem.classList.add("list-group-item", "mt-4");
+
+            const tableEl = document.createElement("h2");
+            tableEl.textContent = "Table #" + (i + 1);
+            console.log("runWaitListQuery -> tableEl", tableEl);
+
+            const hrBreak = document.createElement("hr");
+
+            const nameEl = document.createElement("h2");
+            nameEl.textContent = `Name: ${waitData[i].name}`;
+            console.log("runWaitListQuery -> nameEl", nameEl);
+
+            const emailEl = document.createElement("h2");
+            emailEl.textContent = `Email: ${waitData[i].email}`;
+            console.log("runWaitListQuery -> emailEl", emailEl);
+
+            const phoneEl = document.createElement("h2");
+            phoneEl.textContent = `Phone: ${waitData[i].phone}`;
+            console.log("runWaitListQuery -> phoneEl", phoneEl);
+
+            listItem.appendChild(tableEl);
+            listItem.appendChild(hrBreak);
+            listItem.appendChild(nameEl);
+            listItem.appendChild(emailEl);
+            listItem.appendChild(phoneEl);
+            waitList.appendChild(listItem);
+          }
+        })
+        .catch((error) => console.log("Error:", error));
+    };
+
+    runTableQuery();
+    runWaitListQuery();
+  </script>
+</html>
